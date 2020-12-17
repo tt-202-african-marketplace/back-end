@@ -1,8 +1,8 @@
 const router = require('express').Router();
 const colors = require('colors');
+const bcrypt = require('bcryptjs')
 
 const dbAuth = require('../auth/auth-model.js');
-
 
 router.get('', async (req, res) => {
     try {
@@ -19,13 +19,14 @@ router.get('', async (req, res) => {
 
 router.post('/register/:role', giveRollId, async (req, res) => {
     const new_user = req.body;
-
     if (!new_user.email || !new_user.password || !new_user.first_name || !new_user.last_name || !new_user.role_id) {
         res.status(401).json({
             message: 'Please check that all fields are not empty!'
         });
     } else {
         try {
+            const hash = bcrypt.hashSync(new_user.password, 10);
+            new_user.password = hash;
             const registration = await dbAuth.register(new_user);
             console.log(`registered new user!` .bgMagenta);
             res.status(201).json(registration);
@@ -38,6 +39,7 @@ router.post('/register/:role', giveRollId, async (req, res) => {
     }
     
 })
+
 
 
 //middleware
