@@ -3,7 +3,7 @@ const colors = require('colors');
 const dotenv = require('dotenv').config()
 
 
-const PORT = process.env.PORT || 3333;
+const PORT = process.env.PORT;
 server.listen(PORT, ()=> {
     console.log(`
         *** Hello, I'm listening on port ${PORT} :) *** 
