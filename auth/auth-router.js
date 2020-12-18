@@ -5,9 +5,9 @@ const jwt = require('jsonwebtoken');
 
 const secrets = require('./secrets.js');
 const dbAuth = require('../auth/auth-model.js');
-const { validateLoginBody, giveRoleId } = require('./middleware.js');
+const { validateLoginBody, giveRoleId, restricted } = require('./middleware.js');
 
-router.get('', async (req, res) => {
+router.get('', restricted, async (req, res) => {
     try {
         const all_users = await dbAuth.find();
         res.status(200).json(all_users);
