@@ -12,7 +12,7 @@ router.get('', restricted, async (req, res) => {
         const all_users = await dbAuth.find();
         res.status(200).json(all_users);
     } catch (error) {
-        console.log(error);
+        console.log(error .bgRed);
         res.status(500).json({
             message: 'sever error',
             error
