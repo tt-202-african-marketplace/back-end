@@ -3,6 +3,7 @@ const colors = require('colors');
 const bcrypt = require('bcryptjs')
 
 const dbAuth = require('../auth/auth-model.js');
+const { validateLoginBody, giveRoleId } = require('./middleware.js');
 
 router.get('', async (req, res) => {
     try {
@@ -17,11 +18,11 @@ router.get('', async (req, res) => {
     }
 })
 
-router.post('/register/:role', giveRollId, async (req, res) => {
+router.post('/register/:role', giveRoleId, async (req, res) => {
     const new_user = req.body;
     if (!new_user.email || !new_user.password || !new_user.first_name || !new_user.last_name || !new_user.role_id) {
         res.status(401).json({
-            message: 'Please check that all fields are not empty!'
+            message: 'Please check that all fields are not empty!',
         });
     } else {
         try {
@@ -39,26 +40,33 @@ router.post('/register/:role', giveRollId, async (req, res) => {
     }
     
 })
-
-
-
-//middleware
-function giveRollId(req, res, next) {
-    const { role } = req.params;
-    switch(role) {
-        case 'shopper':
-            req.body.role_id = 1;
-            break;
-        case 'owner':
-            req.body.role_id = 2;
-            break;
-        default:
-            res.status(400).json({
-                message: 'invalid role'
+// -------------------- //
+// POST /login 
+// -------------------- //
+router.post('/login', validateLoginBody, async (req, res) => {
+    const {email, password} = req.body;
+    try {    
+        const found_user = await dbAuth.findByEmail(email);
+        if (found_user && bcrypt.compareSync(password, found_user.password)) {
+            res.status(200).json({
+                message: `Welcome, ${found_user.first_name}`,
+                role: found_user.role_id,
             })
+        } else {
+        res.status(401).json({
+            message: 'invalid credentials'
+        }) 
+        }
+    } catch (error) {
+        console.log(error .bgRed);
+        res.status(500).json({
+            message: 'server error - login',
+            error,
+        });
     }
-    next();
-}
+})
+
+
 
 
 
