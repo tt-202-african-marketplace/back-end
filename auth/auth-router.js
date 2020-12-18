@@ -1,7 +1,9 @@
 const router = require('express').Router();
 const colors = require('colors');
-const bcrypt = require('bcryptjs')
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
+const secrets = require('./secrets.js');
 const dbAuth = require('../auth/auth-model.js');
 const { validateLoginBody, giveRoleId } = require('./middleware.js');
 
@@ -43,14 +45,29 @@ router.post('/register/:role', giveRoleId, async (req, res) => {
 // -------------------- //
 // POST /login 
 // -------------------- //
+/* 
+ request :
+    {
+        email: samsam3@email.com,
+        password: 1234
+    }
+
+response: 
+    {
+        message: 'Welcome, Sam',
+        role: 1
+    }
+*/
 router.post('/login', validateLoginBody, async (req, res) => {
     const {email, password} = req.body;
     try {    
         const found_user = await dbAuth.findByEmail(email);
         if (found_user && bcrypt.compareSync(password, found_user.password)) {
+            const token = await jwtGenerator(found_user);
             res.status(200).json({
                 message: `Welcome, ${found_user.first_name}`,
                 role: found_user.role_id,
+                token,
             })
         } else {
         res.status(401).json({
@@ -67,6 +84,22 @@ router.post('/login', validateLoginBody, async (req, res) => {
 })
 
 
+// -------------------- //
+// WEB TOKEN GEN
+// -------------------- //
+function jwtGenerator(user) {
+    const payload = {
+      subject: user.id,
+      first_name: user.first_name,
+      role: user.role_id
+    }
+    const secret = secrets.jwt_secret;
+    const options = {
+      expiresIn: 30
+    };
+  
+    return jwt.sign(payload, secret, options);
+  } 
 
 
 
