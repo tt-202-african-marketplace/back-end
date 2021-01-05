@@ -35,6 +35,24 @@ router.get('/:id', async (req, res) => {
     }
 })
 
-
+router.get('/category/:categoryid', async (req, res) => {
+    const {categoryid} = req.params
+    try {
+        const found_products = await dbProducts.findByCat(categoryid);
+        if (found_products.length === 0) {
+            res.status(400).json({
+                message: 'Sorry, no products under that caregory exist :('
+            })
+        } else {
+            res.status(200).json(found_products);
+        }
+    } catch (error) {
+        console.log(error .bgRed);
+        res.status(500).json({
+            message: 'sever error',
+            error
+        })
+    }
+})
 
 module.exports = router;

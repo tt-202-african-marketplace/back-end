@@ -4,7 +4,7 @@ const db = require('../../database/db-config.js');
 module.exports = {
     find,
     findById,
-    //findByCat,
+    findByCat,
     //findByUser,
     //findByLocation (User)
 }
@@ -28,6 +28,10 @@ async function findById(productID) {
 }
 
 
-async function findByUser(userID) {
-    return;
+async function findByCat(categoryID) {
+    try {
+        return await db('products').where({category_id: categoryID})
+    } catch (err) {
+        throw err;
+    }
 }
