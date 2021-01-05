@@ -19,7 +19,6 @@ exports.up = function(knex) {
         tbl.integer('role_id').notNullable().references('roles.id');
         tbl.integer('location_id').notNullable().references('locations.id');
         tbl.string('email', 255).notNullable().unique();
-        tbl.string('username', 128).notNullable().unique();
         tbl.string('password', 255).notNullable();
         tbl.string('first_name', 128).notNullable();
         tbl.string('last_name', 128).notNullable();
