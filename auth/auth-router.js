@@ -22,7 +22,7 @@ router.get('', restricted, async (req, res) => {
 
 router.post('/register/:role', giveRoleId, async (req, res) => {
     const new_user = req.body;
-    if (!new_user.email || !new_user.password || !new_user.first_name || !new_user.last_name || !new_user.role_id) {
+    if (!new_user.email || !new_user.password || !new_user.first_name || !new_user.last_name || !new_user.role_id || !new_user.shop_name || !new_user.location_id) {
         res.status(401).json({
             message: 'Please check that all fields are not empty!',
         });
@@ -95,7 +95,7 @@ function jwtGenerator(user) {
     }
     const secret = secrets.jwt_secret;
     const options = {
-      expiresIn: 30
+      expiresIn: 60
     };
   
     return jwt.sign(payload, secret, options);
