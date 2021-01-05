@@ -28,6 +28,7 @@ function giveRoleId(req, res, next) {
     next();
 }
 
+
 /* 
 validateLoginBody()
 FOR LOGIN, checks that request body has email and password as properties.

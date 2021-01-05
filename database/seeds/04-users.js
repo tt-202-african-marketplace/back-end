@@ -9,9 +9,9 @@ exports.seed = function(knex) {
           email:'test@test.com', 
           password: 'test', 
           first_name: 'Testy', 
-          last_name: 'Tester', 
-          role_id: '2', 
-          shop_id: '1', 
+          last_name: 'Tester',
+          shop_name: 'Zesty Testy\'s Spices',
+          role_id: '2',
           location_id: '1'
         },
         {
@@ -19,18 +19,19 @@ exports.seed = function(knex) {
           password: 'test', 
           first_name: 'Jane', 
           last_name: 'Doe', 
+          shop_name: 'Jane Two Exports',
           role_id: '2', 
-          shop_id: '2', 
           location_id: '2'
         },
         {
           email:'jamboo@test.com', 
           password: 'test', 
           first_name: 'Jam', 
-          last_name: 'Boo', 
+          last_name: 'Boo',
+          shop_name: 'Jamboo Jams',
           role_id: '2', 
-          shop_id: '3',
-          location_id: '3'},
+          location_id: '3'
+        },
       ]);
     });
 };
