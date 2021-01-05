@@ -21,7 +21,7 @@ router.get('/:id', async (req, res) => {
         const found_product = await dbProducts.findById(id);
         if (!found_product) {
             res.status(400).json({
-                message: 'product with that id could not be found :('
+                message: 'Product with that id could not be found :('
             })
         } else {
             res.status(200).json(found_product);
@@ -54,7 +54,7 @@ router.get('/categories/:categoryid', async (req, res) => {
         const found_products = await dbProducts.findByCat(categoryid);
         if (found_products.length === 0) {
             res.status(400).json({
-                message: 'Sorry, no products under that caregory exist :('
+                message: 'Sorry, that category does not exist or there are no products under that caregory listed yet.'
             })
         } else {
             res.status(200).json(found_products);
@@ -68,13 +68,17 @@ router.get('/categories/:categoryid', async (req, res) => {
     }
 })
 
-router.get('/category/:categoryid', async (req, res) => {
-    const {categoryid} = req.params
+// - - - - - - - - - - - - - - - - - - - - //
+// GET /user/id
+// returns array of products by user_id
+// - - - - - - - - - - - - - - - - - - - - //
+router.get('/user/:id', async (req, res) => {
+    const {id} = req.params
     try {
-        const found_products = await dbProducts.findByCat(categoryid);
+        const found_products = await dbProducts.findByUser(id);
         if (found_products.length === 0) {
             res.status(400).json({
-                message: 'Sorry, no products under that caregory exist :('
+                message: 'Sorry, that user does not exist or has no products to sell yet.'
             })
         } else {
             res.status(200).json(found_products);
