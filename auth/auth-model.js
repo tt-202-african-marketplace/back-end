@@ -7,7 +7,7 @@ module.exports = {
     findByEmail,
     addProduct,
     removeProduct,
-    //editProduct,
+    editProduct,
 }
 
 
@@ -51,6 +51,14 @@ async function removeProduct(productID) {
     try {
         const del_product = await db('products').where({id: productID}).del();
         return del_product;  
+    } catch (error) {
+        throw error 
+    }
+}
+
+async function editProduct(productID, edits) {
+    try {
+        const edit_product = await db('products').where({id: productID}).update({...edits})
     } catch (error) {
         throw error 
     }

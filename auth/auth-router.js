@@ -136,7 +136,34 @@ router.delete('/remove-product/:id', async (req, res) => {
     }
 })
 
-
+router.put('/edit-product/:id', async (req, res) => {
+    const {id} = req.params;
+    const edits = req.body
+    const found_product = await dbProducts.findById(id);
+    if (!found_product) {
+        res.status(400).json({
+            message: `product with id: ${id} does not exist!`
+        })
+    } else if (!edits) {
+        res.status(400).json({
+            message: `please verify info being edited!`
+        })
+    } else {
+        try {
+            const updated = await dbAuth.editProduct(id, edits);
+            res.status(201).json({
+                message: 'updated product info!',
+                product: updated,
+            })
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({
+                message: 'server error - edit product',
+                error,
+            })
+        }
+    }
+})
 
 // -------------------- //
 // WEB TOKEN GEN
