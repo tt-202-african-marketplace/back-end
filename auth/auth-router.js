@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 
 const secrets = require('./secrets.js');
 const dbAuth = require('../auth/auth-model.js');
+const dbProducts = require('../api/products/products-model.js')
 const { validateLoginBody, giveRoleId, restricted } = require('./middleware.js');
 
 router.get('', restricted, async (req, res) => {
@@ -66,6 +67,7 @@ router.post('/login', validateLoginBody, async (req, res) => {
             const token = await jwtGenerator(found_user);
             res.status(200).json({
                 message: `Welcome, ${found_user.first_name}`,
+                id: found_user.id,
                 role: found_user.role_id,
                 token,
             })
@@ -82,6 +84,58 @@ router.post('/login', validateLoginBody, async (req, res) => {
         });
     }
 })
+
+
+router.post('/add-product', async (req, res) => {
+    const newProduct = req.body;
+    if (!newProduct.item_name || !newProduct.user_id || !newProduct.category_id || !newProduct.price) {
+        res.status(400).json({
+            message: 'please include all required product info!'
+        })
+    } else {
+        try {
+            const added =  await dbAuth.addProduct(req.body)
+            res.status(201).json({
+                message: 'product added!',
+                product: added
+    
+            })
+        } catch (error) {
+            console.log(error .bgRed);
+            res.status(500).json({
+                message: 'server error - add product',
+                error,
+            })
+        }
+    }
+    
+})
+
+router.delete('/remove-product/:id', async (req, res) => {
+    const {id} = req.params;
+    const found_product = await dbProducts.findById(id);
+    if (!found_product) {
+        res.status(400).json({
+            message: `Cannot find product with id: ${id}!`
+        })
+    } else {
+        try {
+            const removed =  await dbAuth.removeProduct(id);
+            res.status(200).json({
+                message: 'product deleted!',
+                product: removed
+        
+            })
+        } catch (error) {
+            console.log(error .bgRed);
+            res.status(500).json({
+                message: 'server error - remove product',
+                error,
+            })
+        } 
+    }
+})
+
 
 
 // -------------------- //

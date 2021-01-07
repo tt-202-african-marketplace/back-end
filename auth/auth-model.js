@@ -5,6 +5,9 @@ module.exports = {
     find,
     register,
     findByEmail,
+    addProduct,
+    removeProduct,
+    //editProduct,
 }
 
 
@@ -32,5 +35,23 @@ async function register(new_user_reg) {
         return registered_user;
     } catch (error) {
         throw error
+    }
+}
+
+async function addProduct(new_product) {
+    try {
+        const added_product = await db('products').insert(new_product);
+        return added_product;
+    } catch (error) {
+        throw error
+    }
+}
+
+async function removeProduct(productID) {
+    try {
+        const del_product = await db('products').where({id: productID}).del();
+        return del_product;  
+    } catch (error) {
+        throw error 
     }
 }

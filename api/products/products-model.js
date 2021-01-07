@@ -7,7 +7,6 @@ module.exports = {
     findCat,
     findByCat,
     findByUser,
-    //findByLocation (User)
 }
 
 
