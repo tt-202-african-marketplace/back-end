@@ -47,7 +47,6 @@ function restricted(req, res, next) {
     const authHeader = req.headers.authorization || '';
     const token = authHeader.split(' ')[1];
   
-    console.log(req.headers)
     if (token) {
       jwt.verify(token, secrets.jwt_secret, (err, decodedToken) => {
         if (err) {

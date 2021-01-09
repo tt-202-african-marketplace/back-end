@@ -86,34 +86,45 @@ describe('server',  () => {
         })
     }) 
     
-    describe.skip('GET /api/auth/users' , () => {
+    describe('GET /api/auth/users' , () => {
+        const {email, password} = testuserData;
         
         beforeEach( async () => {
             await db('users').truncate();
             await request(server)
                     .post('/api/auth/register/owner')
                     .send({...testuserData});
-            const login = await request(server)
-                    .post('/api/login')
-                    .send({
-                        email: testuserData.username, password: testuserData.password
-                    })
         })
 
         test('requires valid token to proceed', async() => {
             const response = await request(server).get('/api/auth/users');
             expect(response.status).toEqual(401);
         });
+        
+        test('returns 200 status', async () => {
+            const login = await request(server)
+                .post('/api/auth/login')
+                .send({email, password});
+            const {token} = login.body
+
+            const response = await request(server)
+                .get('/api/auth/users')
+                .set('Authorization', `Bearer ${token}`);
+            expect(response.status).toEqual(200);       
+        })
 
         test('it returns an array', async () => {
-            const response = await request(server).get('/api/auth/users');
+            const login = await request(server)
+                .post('/api/auth/login')
+                .send({email, password});
+            const {token} = login.body
+
+            const response = await request(server)
+                .get('/api/auth/users')
+                .set('Authorization', `Bearer ${token}`);
             expect(Array.isArray(response.body)).toBeTruthy();
         })
-        test('returns 200 status', async () => {
-            const expected = 200;
-            const response = await request(server).get('/api/auth/users');
-            expect(response.status).toEqual(expected);       
-        })
+        
     })
 })
 
