@@ -46,10 +46,45 @@ describe('server',  () => {
         test('user cannot register with invalid info submission and gets 400 status', async () => {
             const response = await request(server)
             .post('/api/auth/register/owner')
-            .send({...testuserData, email:''})
-        expect(response.status).toBe(401)
+            .send({...testuserData, email:''});
+
+            expect(response.status).toBe(401);
         })
     })
+
+    describe('POST /api/auth/login', () => {
+        beforeEach(async () => {
+            await db('users').truncate();
+            await request(server)
+                .post('/api/auth/register/owner')
+                .send({...testuserData})
+        })
+
+        const {email, password} = testuserData;
+        test('user can login with valid cred and get 200 status', async () => {
+            const response = await request(server)
+            .post('/api/auth/login')
+            .send({email, password});
+
+            expect(response.status).toBe(200);
+        })
+
+        test('user cannot login with invalid cred and get 401 status', async () => {
+            const response = await request(server)
+            .post('/api/auth/login')
+            .send({email, password:'badpass'});
+
+            expect(response.status).toBe(401);
+        })
+
+        test('successful login responds with token', async () => {
+            const response = await request(server)
+            .post('/api/auth/login')
+            .send({email, password});
+
+            expect(response.body).toHaveProperty('token');
+        })
+    }) 
     
     describe.skip('GET /api/auth/users' , () => {
         
@@ -70,11 +105,11 @@ describe('server',  () => {
             expect(response.status).toEqual(401);
         });
 
-        test.skip('it returns an array', async () => {
+        test('it returns an array', async () => {
             const response = await request(server).get('/api/auth/users');
             expect(Array.isArray(response.body)).toBeTruthy();
         })
-        test.skip('returns 200 status', async () => {
+        test('returns 200 status', async () => {
             const expected = 200;
             const response = await request(server).get('/api/auth/users');
             expect(response.status).toEqual(expected);       
