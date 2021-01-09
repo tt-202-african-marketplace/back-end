@@ -7,6 +7,7 @@ module.exports = {
     findCat,
     findByCat,
     findByUser,
+    findByLocation
 }
 
 
@@ -48,5 +49,16 @@ async function findByUser(userID) {
         return await db('products').where({user_id: userID})
     } catch (err) {
         throw err;
+    }
+}
+
+async function findByLocation(locationID) {
+    try {
+        return await db('products')
+            .join('users', 'users.id', '=', 'products.user_id')
+            .where({location_id: locationID})
+            .select('user_id','products.id', 'products.item_name', 'products.price')
+    } catch (error) {
+        
     }
 }

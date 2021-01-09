@@ -8,10 +8,30 @@ const dbAuth = require('../auth/auth-model.js');
 const dbProducts = require('../api/products/products-model.js')
 const { validateLoginBody, giveRoleId, restricted } = require('./middleware.js');
 
-router.get('', restricted, async (req, res) => {
+router.get('/users', async (req, res) => {
     try {
         const all_users = await dbAuth.find();
         res.status(200).json(all_users);
+    } catch (error) {
+        console.log(error .bgRed);
+        res.status(500).json({
+            message: 'sever error',
+            error
+        })
+    }
+})
+
+router.get('/users/:id', async (req, res) => {
+    const {id} = req.params;
+    try {
+        const found = await dbAuth.findUserById(id);
+        if (!found) {
+            res.status(400).json({
+                message: 'User with that id does not exist!'
+            })
+        } else {
+            res.status(200).json(found);
+        }
     } catch (error) {
         console.log(error .bgRed);
         res.status(500).json({
@@ -56,7 +76,8 @@ router.post('/register/:role', giveRoleId, async (req, res) => {
 response: 
     {
         message: 'Welcome, Sam',
-        role: 1
+        id: found_user.id,
+        token: <realy long hash>
     }
 */
 router.post('/login', validateLoginBody, async (req, res) => {
@@ -68,7 +89,6 @@ router.post('/login', validateLoginBody, async (req, res) => {
             res.status(200).json({
                 message: `Welcome, ${found_user.first_name}`,
                 id: found_user.id,
-                role: found_user.role_id,
                 token,
             })
         } else {

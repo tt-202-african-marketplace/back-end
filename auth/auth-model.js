@@ -3,6 +3,7 @@ const db = require('../database/db-config.js');
 
 module.exports = {
     find,
+    findUserById,
     register,
     findByEmail,
     addProduct,
@@ -14,6 +15,14 @@ module.exports = {
 async function find() {
     try {
         return await db('users')
+    } catch (err) {
+        throw err;
+    }
+}
+
+async function findUserById(userID) {
+    try {
+        return await db('users').where({id: userID}).first();
     } catch (err) {
         throw err;
     }
