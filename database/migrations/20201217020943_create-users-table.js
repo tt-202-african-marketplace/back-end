@@ -12,12 +12,17 @@ exports.up = function(knex) {
     .createTable('users', tbl => {
         tbl.increments();
         tbl.integer('shop_name').unique().notNullable();
-        tbl.integer('role_id').notNullable().references('roles.id');
-        tbl.integer('location_id').notNullable().references('locations.id');
+        tbl.integer('role_id').notNullable().references('roles.id')
+          .onDelete('CASCADE')
+          .onUpdate('CASCADE');
+        tbl.integer('location_id').notNullable().references('locations.id')
+          .onDelete('CASCADE')
+          .onUpdate('CASCADE');
         tbl.string('email', 255).notNullable().unique();
         tbl.string('password', 255).notNullable();
         tbl.string('first_name', 128).notNullable();
         tbl.string('last_name', 128).notNullable();
+        
 
     });
 };

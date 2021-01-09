@@ -8,7 +8,7 @@ const dbAuth = require('../auth/auth-model.js');
 const dbProducts = require('../api/products/products-model.js')
 const { validateLoginBody, giveRoleId, restricted } = require('./middleware.js');
 
-router.get('/users', async (req, res) => {
+router.get('/users', restricted, async (req, res) => {
     try {
         const all_users = await dbAuth.find();
         res.status(200).json(all_users);
