@@ -46,7 +46,6 @@ function validateLoginBody(req, res, next) {
 function restricted(req, res, next) {
     const authHeader = req.headers.authorization || '';
     const token = authHeader.split(' ')[1];
-  
     if (token) {
       jwt.verify(token, secrets.jwt_secret, (err, decodedToken) => {
         if (err) {
@@ -55,6 +54,7 @@ function restricted(req, res, next) {
           })
         } else {
           req.decodedJwt = decodedToken;
+          req.body.user_id = decodedToken.subject;
           next();
         }
       })

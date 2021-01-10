@@ -4,7 +4,7 @@
   "description": "unit 4 repo",
   "main": "index.js",
   "scripts": {
-    "test": "cross-env DB_ENV=testing jest --watch",
+    "test": "cross-env DB_ENV=testing jest",
     "server": "nodemon index.js",
     "start": "node index.js"
   },

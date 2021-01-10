@@ -31,7 +31,7 @@ async function findUserById(userID) {
 async function findByEmail(email) {
     try {
         const found_emails = await db('users').where({email}).first();
-        console.log(`sg : auth-model : found_emails : findByEmail() : found_emails = ${found_emails}` .bgBrightBlue)
+        //console.log(`sg : auth-model : found_emails : findByEmail() : found_emails = ${found_emails}` .bgBrightBlue)
         return found_emails;
     } catch (error) {
         throw error;

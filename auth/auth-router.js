@@ -106,19 +106,18 @@ router.post('/login', validateLoginBody, async (req, res) => {
 })
 
 
-router.post('/add-product', async (req, res) => {
-    const newProduct = req.body;
-    if (!newProduct.item_name || !newProduct.user_id || !newProduct.category_id || !newProduct.price) {
+router.post('/add-product', restricted,  async (req, res) => {
+    const {item_name, category_id, price, user_id} = req.body;
+    if (!item_name || !category_id || !price || !user_id) {
         res.status(400).json({
             message: 'please include all required product info!'
         })
     } else {
         try {
-            const added =  await dbAuth.addProduct(req.body)
+            const ids =  await dbAuth.addProduct(req.body)
             res.status(201).json({
-                message: 'product added!',
-                product: added
-    
+                message: 'product added!', 
+                product: await dbProducts.findById(ids[0]) 
             })
         } catch (error) {
             console.log(error .bgRed);
@@ -131,7 +130,7 @@ router.post('/add-product', async (req, res) => {
     
 })
 
-router.delete('/remove-product/:id', async (req, res) => {
+router.delete('/remove-product/:id', restricted, async (req, res) => {
     const {id} = req.params;
     const found_product = await dbProducts.findById(id);
     if (!found_product) {
@@ -140,10 +139,10 @@ router.delete('/remove-product/:id', async (req, res) => {
         })
     } else {
         try {
-            const removed =  await dbAuth.removeProduct(id);
+            const ids =  await dbAuth.removeProduct(id);
             res.status(200).json({
                 message: 'product deleted!',
-                product: removed
+                deleted: {...found_product}
         
             })
         } catch (error) {
@@ -156,7 +155,7 @@ router.delete('/remove-product/:id', async (req, res) => {
     }
 })
 
-router.put('/edit-product/:id', async (req, res) => {
+router.put('/edit-product/:id', restricted, async (req, res) => {
     const {id} = req.params;
     const edits = req.body
     const found_product = await dbProducts.findById(id);
@@ -173,7 +172,7 @@ router.put('/edit-product/:id', async (req, res) => {
             const updated = await dbAuth.editProduct(id, edits);
             res.status(201).json({
                 message: 'updated product info!',
-                product: updated,
+                changes: `${edits}`
             })
         } catch (error) {
             console.log(error);
