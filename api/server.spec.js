@@ -13,7 +13,7 @@ const testuserData = {
 
 const testProductData = {
     item_name: 'odd fruit', 
-    category_id: 8, 
+    category_id: 5, 
     price: 10.50,
     description: 'odd but sweet'
 }
@@ -177,10 +177,8 @@ describe('server',  () => {
             expect(response.status).toEqual(200);
             expect(response.body).toHaveProperty('deleted.item_name')       
         })
-
     })
 
-    
 
     describe('GET /api/products', () => {
         test('returns 200 statusand returns an array', async () => {
@@ -191,8 +189,8 @@ describe('server',  () => {
         })
     })
 
-    describe('GET /api/products/:id', () => {
 
+    describe('GET /api/products/:id', () => {
         beforeEach(async () => {        
             const {email, password} = testuserData;
 
@@ -229,6 +227,124 @@ describe('server',  () => {
 
         })
     })
+
+    describe('GET /api/products/categories/:id', () => {
+        beforeEach(async () => {        
+            const {email, password} = testuserData;
+
+            await request(server)
+            .post('/api/auth/register/owner')
+            .send({...testuserData});
+
+            const login = await request(server)
+                .post('/api/auth/login')
+                .send({email, password});
+
+            const {token} = login.body;
+
+            await request(server)
+            .post('/api/auth/add-product')
+            .send({...testProductData})
+            .set('Authorization', `Bearer ${token}`); 
+        })
+        
+        test('returns 200 status and array', async () => {
+            const response = await request(server)
+                .get('/api/products/categories/5')
+            expect(response.status).toEqual(200);
+            expect(Array.isArray(response.body)).toBeTruthy();
+
+        })
+    })
+
+    describe('GET /api/products/user/:id', () => {
+        beforeEach(async () => {        
+            const {email, password} = testuserData;
+
+            await request(server)
+            .post('/api/auth/register/owner')
+            .send({...testuserData});
+
+            const login = await request(server)
+                .post('/api/auth/login')
+                .send({email, password});
+
+            const {token} = login.body;
+
+            await request(server)
+            .post('/api/auth/add-product')
+            .send({...testProductData})
+            .set('Authorization', `Bearer ${token}`); 
+        })
+        
+        test('returns 200 status and array', async () => {
+            const response = await request(server)
+                .get('/api/products/user/1')
+            expect(response.status).toEqual(200);
+            expect(Array.isArray(response.body)).toBeTruthy();
+
+        })
+    })
+
+    describe('GET /api/products/locations/:id', () => {
+        beforeEach(async () => {        
+            const {email, password} = testuserData;
+
+            await request(server)
+            .post('/api/auth/register/owner')
+            .send({...testuserData});
+
+            const login = await request(server)
+                .post('/api/auth/login')
+                .send({email, password});
+
+            const {token} = login.body;
+
+            await request(server)
+            .post('/api/auth/add-product')
+            .send({...testProductData})
+            .set('Authorization', `Bearer ${token}`); 
+        })
+        
+        test('returns 200 status and array', async () => {
+            const response = await request(server)
+                .get('/api/products/locations/4')
+            expect(response.status).toEqual(200);
+            expect(Array.isArray(response.body)).toBeTruthy();
+
+        })
+    })
+
+    describe('GET /api/locations/', () => {
+        
+        test('returns 200 status and array', async () => {
+            const response = await request(server)
+                .get('/api/locations')
+            expect(response.status).toEqual(200);
+            expect(Array.isArray(response.body)).toBeTruthy();
+
+        })
+    })
+
+    describe('GET /api/locations/:id', () => {
+        
+        test('returns 200 status and array', async () => {
+            const response = await request(server)
+                .get('/api/locations/1')
+            expect(response.status).toEqual(200);
+            expect(response.body).toHaveProperty('location');
+
+        })
+
+        test('invalid location returns 400 status and message', async () => {
+            const response = await request(server)
+                .get('/api/locations/100')
+            expect(response.status).toEqual(400);
+            expect(response.body).toHaveProperty('message');
+
+        })
+    })
+
 })
 
 
