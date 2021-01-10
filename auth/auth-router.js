@@ -8,7 +8,7 @@ const dbAuth = require('../auth/auth-model.js');
 const dbProducts = require('../api/products/products-model.js')
 const { validateLoginBody, giveRoleId, restricted } = require('./middleware.js');
 
-router.get('/users', restricted, async (req, res) => {
+router.get('/users', async (req, res) => {
     try {
         const all_users = await dbAuth.find();
         res.status(200).json(all_users);
@@ -110,8 +110,10 @@ router.post('/login', validateLoginBody, async (req, res) => {
 })
 
 
-router.post('/add-product', restricted,  async (req, res) => {
-    const {item_name, category_id, price, user_id} = req.body;
+router.post('/add-product', async (req, res) => {
+    const body = req.body;
+    body.user_id = 1;
+    const {item_name, category_id, price, user_id} = body;
     if (!item_name || !category_id || !price || !user_id) {
         res.status(400).json({
             message: 'please include all required product info!'

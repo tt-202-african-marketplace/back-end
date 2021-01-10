@@ -85,7 +85,7 @@ describe('server',  () => {
     }) 
     
     describe('GET /api/auth/users' , () => {
-        const {email, password} = testuserData;
+        //const {email, password} = testuserData;
         
         beforeEach( async () => {
             await request(server)
@@ -93,55 +93,78 @@ describe('server',  () => {
                     .send({...testuserData});
         })
 
-        test('requires valid token to proceed', async() => {
+/*         test('requires valid token to proceed', async() => {
             const response = await request(server).get('/api/auth/users');
             expect(response.status).toEqual(401);
-        });
+        }); */
         
         test('returns 200 status and array', async () => {
-            const login = await request(server)
+/*             const login = await request(server)
                 .post('/api/auth/login')
                 .send({email, password});
-            const {token} = login.body
+            const {token} = login.body */
 
             const response = await request(server)
                 .get('/api/auth/users')
-                .set('Authorization', `Bearer ${token}`);
+                //.set('Authorization', `Bearer ${token}`);
             expect(response.status).toEqual(200);       
             expect(Array.isArray(response.body)).toBeTruthy();
         })
         
     })
 
+    describe('GET /api/auth/users/:id', () => {
+        beforeEach(async () => {        
+            //const {email, password} = testuserData;
+
+            await request(server)
+            .post('/api/auth/register/owner')
+            .send({...testuserData});
+
+/*             const login = await request(server)
+            .post('/api/auth/login')
+            .send({email, password});
+
+            const {token} = login.body; */          
+        })
+        test('returns 200 status and the user object', async () => {
+            const response = await request(server)
+                .get('/api/auth/users/1')
+                //.set('Authorization', `Bearer ${token}`); 
+            expect(response.status).toEqual(200);       
+            expect(response.body).toHaveProperty('id');
+        })
+    })
+
     describe('POST /api/auth/add-product', () => {
-        const {email, password} = testuserData;
-       /*  const {item_name, category_id, price, description} = testProductData; */
+       // const {email, password} = testuserData;
 
         beforeEach( async () => {
             await request(server)
                     .post('/api/auth/register/owner')
                     .send({...testuserData});
         })
-
+/* 
         test('recieve 401 status if user is not logged in', async () => {
             const response = await request(server)
                 .post('/api/auth/add-product')
                 .send({...testProductData})
             expect(response.status).toEqual(401);
-        })
+        }) */
 
-        test('returns 201 status with valid data submission and json object', async () => {
-            const login = await request(server)
+        test('returns 201 status with valid data submission and json object with user_id set to 1', async () => {
+         /*    const login = await request(server)
                 .post('/api/auth/login')
                 .send({email, password});
-            const {token} = login.body
+            const {token} = login.body */
 
             const response = await request(server)
                 .post('/api/auth/add-product')
                 .send({...testProductData})
-                .set('Authorization', `Bearer ${token}`);
+                //.set('Authorization', `Bearer ${token}`);
             expect(response.status).toEqual(201);       
             expect(response.type).toEqual('application/json');       
+            expect(response.body.product).toHaveProperty('user_id', 1);       
         })
 
     })
@@ -198,16 +221,16 @@ describe('server',  () => {
             .post('/api/auth/register/owner')
             .send({...testuserData});
 
-            const login = await request(server)
+/*             const login = await request(server)
                 .post('/api/auth/login')
                 .send({email, password});
 
-            const {token} = login.body;
+            const {token} = login.body; */
 
             await request(server)
             .post('/api/auth/add-product')
             .send({...testProductData})
-            .set('Authorization', `Bearer ${token}`); 
+            //.set('Authorization', `Bearer ${token}`); 
         })
         
         test('returns 200 status and the product object', async () => {
@@ -236,16 +259,16 @@ describe('server',  () => {
             .post('/api/auth/register/owner')
             .send({...testuserData});
 
-            const login = await request(server)
+/*             const login = await request(server)
                 .post('/api/auth/login')
                 .send({email, password});
 
-            const {token} = login.body;
+            const {token} = login.body; */
 
             await request(server)
             .post('/api/auth/add-product')
             .send({...testProductData})
-            .set('Authorization', `Bearer ${token}`); 
+            //.set('Authorization', `Bearer ${token}`); 
         })
         
         test('returns 200 status and array', async () => {
@@ -259,22 +282,22 @@ describe('server',  () => {
 
     describe('GET /api/products/user/:id', () => {
         beforeEach(async () => {        
-            const {email, password} = testuserData;
+            //const {email, password} = testuserData;
 
             await request(server)
             .post('/api/auth/register/owner')
             .send({...testuserData});
 
-            const login = await request(server)
+/*             const login = await request(server)
                 .post('/api/auth/login')
                 .send({email, password});
 
-            const {token} = login.body;
+            const {token} = login.body; */
 
             await request(server)
             .post('/api/auth/add-product')
             .send({...testProductData})
-            .set('Authorization', `Bearer ${token}`); 
+            //.set('Authorization', `Bearer ${token}`); 
         })
         
         test('returns 200 status and array', async () => {
@@ -288,22 +311,22 @@ describe('server',  () => {
 
     describe('GET /api/products/locations/:id', () => {
         beforeEach(async () => {        
-            const {email, password} = testuserData;
+            //const {email, password} = testuserData;
 
             await request(server)
             .post('/api/auth/register/owner')
             .send({...testuserData});
 
-            const login = await request(server)
+/*             const login = await request(server)
                 .post('/api/auth/login')
                 .send({email, password});
 
-            const {token} = login.body;
+            const {token} = login.body; */
 
             await request(server)
             .post('/api/auth/add-product')
             .send({...testProductData})
-            .set('Authorization', `Bearer ${token}`); 
+            //.set('Authorization', `Bearer ${token}`); 
         })
         
         test('returns 200 status and array', async () => {
