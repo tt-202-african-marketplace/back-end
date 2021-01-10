@@ -40,8 +40,8 @@ async function findByEmail(email) {
 
 async function register(new_user_reg) {
     try {
-        const registered_user = await db('users').insert(new_user_reg);
-        return registered_user;
+        const ids = await db('users').insert(new_user_reg);
+        return findUserById(ids[0])
     } catch (error) {
         throw error
     }

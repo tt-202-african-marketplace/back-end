@@ -53,7 +53,11 @@ router.post('/register/:role', giveRoleId, async (req, res) => {
             new_user.password = hash;
             const registration = await dbAuth.register(new_user);
             console.log(`registered new user!` .bgMagenta);
-            res.status(201).json(registration);
+            res.status(201).json({
+                message: `Thank you for registering, ${registration.first_name}!`, 
+                email: registration.email,
+                shop_name: registration.shop_name,
+            });
         } catch (error) {
             console.log(error);
             res.status(500).json({
